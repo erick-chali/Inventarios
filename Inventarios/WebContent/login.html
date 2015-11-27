@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Instalaciones Modernas | Inicio de Sesión</title>
+        <link type="text/css" rel="stylesheet" href="css/bootstrap.css">
+        <link type="text/css" rel="stylesheet" href="css/style.css">
+        <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
+    </head>
+    
+    <body>
+    <div class="row">
+    	<div class="col-sm-8 col-md-12">
+    		<img alt="Instalaciones Modernas" src="img/s.jpg" align="middle" id="logo">
+    	</div>
+    </div>
+    
+    <div class="container">
+    	
+      <form action="ServletLogin" class="form-signin" method="post" id="formLogin" onsubmit="validarFormulario">
+      	
+        <h2 class="form-signin-heading">Inicio de sesión</h2>
+        <label for="ingresaUsuario" class="sr-only">Usuario</label>
+        <input type="text" id="usuario" name="usuario" class="form-control" placeholder="Usuario" required>
+        <label for="inputPassword" class="sr-only">Clave</label>
+        <input type="password" id="clave" name="clave" class="form-control" placeholder="Clave" required>
+        
+        <select class="form-control" id="noToma" name="noToma"  required>
+        	<option value="">Seleccione una opcion</option>
+        </select>
+        
+        <input class="btn btn-lg btn-primary btn-block" id="btnInicia" name="btnInicia" type="submit" value="Iniciar Sesión">
+<!--        <button class="btn btn-lg btn-primary btn-block" type="submit">Iniciar Sesión</button>-->
+      </form>
+      
+    </div>
+    </body>
+</html>
