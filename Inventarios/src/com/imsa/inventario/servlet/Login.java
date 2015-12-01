@@ -52,12 +52,13 @@ public class Login extends HttpServlet {
 		
 		try {
 			con = new ConectarDB().getConnection();
-			stmt = con.prepareCall("{call looginSelectUser(?)}");
+			stmt = con.prepareCall("{call stp_UDLoginTIF(?,?)}");
 			stmt.setString(1, (String)request.getSession().getAttribute("usuario"));
+			stmt.setInt(2, Integer.parseInt((String)request.getSession().getAttribute("noToma")));
 			
 			rs = stmt.executeQuery();
 			while(rs.next()){
-				if(rs.getString("estado_empleado").equals("A")){
+//				if(rs.getString("estado_empleado").equals("A")){
 						if(rs.getString("UserName").equals((String)request.getSession().getAttribute("usuario"))&&rs.getString("Password").equals((String)request.getSession().getAttribute("clave"))){
 							respuesta =1;
 							request.getSession().setAttribute("usuarioGlobal", rs.getString("UserName"));
@@ -69,10 +70,10 @@ public class Login extends HttpServlet {
 						}else{
 							respuesta =0;
 						}
-				}else{
-					respuesta =2;
-					System.out.println("no existe usuario");
-				}
+//				}else{
+//					respuesta =2;
+//					System.out.println("no existe usuario");
+//				}
 			}
 			stmt.close();
 			rs.close();

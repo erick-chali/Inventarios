@@ -40,7 +40,8 @@
 					   }else if(data == '2'){
 						   alert('Usuario no esta activo, avocarse con admin de sistema.');
 					   }else{
-						   alert(data);
+						   console.log(JSON.stringify(data));
+						   alert('Error:' + data);
 					   }
 				   }
 				});

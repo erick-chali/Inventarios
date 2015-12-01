@@ -22,7 +22,75 @@
 	   });
 	   $("#bodega").focus();
 	   $("#bodega").click();
-	   
+	   $('#seccionAgregar').change(function(){
+		   $('#btnAgregarProducto').prop('disabled', false);
+	   });
+	   $('#modalAgregarProducto').on('shown.bs.modal', function () {
+		   cargarEstanteriaAgregar();
+		   $('#btnAgregarProducto').prop('disabled', true);
+		   $('#txtAgregarDescripcion').val('');
+		   $('#txtAgregarUnidad').val('');
+		   $('#seccionAgregar').empty();
+		   $('#txtAgregarCantidad').val('');
+		   $('#txtAgregarCodigo').val('');
+		   $('#lblErrorAgregar').text('');
+	   })
+	   $(document).on('click','#btnNuevo', function(e){
+		   $('#modalAgregarProducto').modal('toggle');
+	   });
+	   $(document).on('keydown','#txtAgregarCodigo', function(e){
+
+		   if(e.keyCode==13||e.keyCode==9){
+			   if($('#txtAgregarCodigo').val()==''){
+				   $('#lblErrorAgregar').text('Debe ingresar un c\u00F3digo para buscar');
+				   $('#txtAgregarCodigo').focus();
+			   }else{	
+				   $('#lblErrorAgregar').text('');
+				   console.log('Buscando...');
+				   buscarProducto($('#txtAgregarCodigo').val()).done(function(data){
+					   $.each(data, function(index, element) {
+						   console.log('Respuesta: ' + element.codigoProducto);
+						   $('#txtAgregarCodigo').val($.trim(element.codigoProducto));
+						   $('#txtAgregarDescripcion').val(element.descripcion);
+						   $('#txtAgregarUnidad').val(element.unidadInventario);
+						   $('#estanteriaAgregar').focus();
+					   });
+					   if(data==''){
+						   $('#lblErrorAgregar').text('C\u00F3digo: ' + $('#codigoProducto').val() + ' no Existe.');
+						   $('#txtAgregarCodigo').focus();
+					   }
+				   });
+			   }
+		   }
+			
+		});
+	   $(document).on('click','#btnAgregarProducto', function(){
+		   if($('#txtAgregarCodigo').val()=='' || $('#txtAgregarCantidad').val()=='' || $('#estanteriaAgregar').val()==0 || $('#seccionAgregar').val()==0){
+			   $('#lblErrorAgregar').text('Necesita llenar todos los campos.');
+		   }else{
+			   $.ajax({
+				   type : 'POST',
+				   url : 'TomarConteo',
+				   dataType : 'html',
+				   data : {
+					   codigop: $('#txtAgregarCodigo').val(),
+					   codigos: $('#seccionAgregar').val(),
+					   codigoe: $('#estanteriaAgregar').val(),
+					   cantidad: $('#txtAgregarCantidad').val(),
+					   
+				   },
+				   error : function(e){
+					   var obj = JSON.parse(JSON.stringify(data))
+					   $('#lblErrorAgregar').text(obj.responseText);
+				   },
+				   success : function(data){
+					   $('#lblErrorAgregar').text('');
+					   $('#modalAgregarProducto').modal('toggle');
+					   notificacionExito(data)
+				   }
+			   });
+		   }
+	   });
 	   $.ajax({
 		   method : 'POST',
 		   url: 'CargarEstanteria',
@@ -43,6 +111,33 @@
 			   });
 		   }
 		});
+	   $('#estanteriaAgregar').change(function(){
+			 var opcion = $(this).find('option:selected');
+			 var idEst = $(opcion).val();
+			 $.ajax({
+				   method : 'POST',
+				   url: 'BuscaSeccion',
+				   dataType: 'json',
+				   data: {
+					   codigoe: $('#estanteriaAgregar').val()
+				   },
+				   error: function(data) {
+					   var obj = JSON.parse(JSON.stringify(data));
+					   $('#notificacionError').hide();
+					   $('#notificacionError').text(obj.responseText);
+					   $('#notificacionError').show();
+					   $('#notificacionError').fadeOut(4000);
+				   },
+				   success: function(data) {
+					   var select = $("#seccionAgregar");
+					   select.empty();
+					   select.append("<option value='0'>Seccion</option>");
+					   $.each(data, function(index, element) {
+						   select.append("<option value='" + element.codigoSeccion + "'>" + element.descripcionSeccion + "</option>");
+					   });
+				   }
+				});
+		  });
 	   $('#estanteria').change(function(){
 			 var opcion = $(this).find('option:selected');
 			 var idEst = $(opcion).val();
@@ -168,72 +263,6 @@
 		   }
 		   
 	   });
-	   
-		/**Ir a buscar datos del codigo ingresado en toma 2*/
-		   $("#codigoToma2222").keydown(function(e){
-
-				
-				if(e.keyCode==13 || e.keyCode==9){
-					$('#tablaDatosToma2').empty();
-					var codP = $(this).val();
-					var texto = $("#txtToma").text();
-					var codB = separarTexto(texto);
-					$.get('CargarProductosDiferencia',
-							{codigoP:codP,codigoB:codB},
-							function(responseJson) {
-						   if(responseJson!=null){
-							   
-							   var contenedor = $("#tablaDatosToma2");
-							   var table1 = $("<table id='datosToma2' class='table table-striped table-bordered table-condensed'></table>");
-						       var thead = $("<thead></thead>");
-						       var tbody = $("<tbody></tbody>");
-						       var rowHead = $("<tr> <th></th> <th></th> <th></th> <th></th> <th></th> <th></th> </tr>");
-						       rowHead.children().eq(0).text("Codigo Producto");
-						       rowHead.children().eq(1).text("Cantidad Actual");
-						       rowHead.children().eq(2).text("Cantidad");
-						       rowHead.children().eq(3).text("Bodega");
-						       rowHead.children().eq(4).text("Estanteria");
-						       rowHead.children().eq(5).text("Seccion");
-						       
-						       rowHead.appendTo(thead);
-						       table1.appendTo(contenedor);
-						       
-						       thead.appendTo(table1);
-						       tbody.appendTo(table1);
-						       
-						       $.each(responseJson, function(key,value) {
-						    	   
-						    	   $("#codigoToma2").val(value['codP'])
-					               $("#descripcion").val(value['descP']);
-					               $("#unidad").val(value['uniP']);
-						            var rowNew = $("<tr> <td><a href='#'></a></td> <td></td> <td><input type='number' id='cantidad' value='0'><button  type='button' id='conteo'>Contar</button></td> <td></td> <td></td> <td></td></tr>");
-						               rowNew.children().children().eq(0).text(value['codP']);
-						               rowNew.children().eq(1).text(parseFloat(value['cantidad']).toFixed(1));
-						               rowNew.children().eq(3).text(value['bodega']);
-						               rowNew.children().eq(4).text(value['estanteria']);
-						               rowNew.children().eq(5).text(value['seccion']);
-						               rowNew.appendTo($("table tbody"));
-						               
-						               
-						       });
-						       
-						       $('#datosToma2').dataTable( {
-						    	   "scrollY" : 200,
-						    	   "scrollX" : true,
-							        "language": {
-							            "url": "//cdn.datatables.net/plug-ins/1.10.7/i18n/Spanish.json"   	
-							        }
-						       	
-							    });
-						       $("#codigoToma2").focusout();
-						       }
-						   });
-				}
-			});
-//		   $(document).on('click-cell.bs.table','#tablaConteo2',function(field, value, row, $element){
-//		   $('#tablaConteo2').on('click-cell.bs.table', function (e, field, value, row, $element) {
-//			   
-//		   });
 		   
    });/**Fin de document.ready*/
  //funcion que verifica los permisos del usuario
@@ -702,5 +731,44 @@
 			'<span data-notify="message"><strong>{2}</strong></span>' +
 		'</div>'
 		});
+	}
+	function cargarEstanteriaAgregar(){
+		$.ajax({
+			   method : 'POST',
+			   url: 'CargarEstanteria',
+			   dataType: 'json',
+			   error: function(data) {
+				   var obj = JSON.parse(JSON.stringify(data));
+				   $('#notificacionError').hide();
+				   $('#notificacionError').text(obj.responseText);
+				   $('#notificacionError').show();
+				   $('#notificacionError').fadeOut(4000);
+			   },
+			   success: function(data) {
+				   var select = $("#estanteriaAgregar");
+				   select.empty();
+				   select.append("<option value='0'>Estanteria</option>");
+				   $.each(data, function(index, element) {
+					   select.append("<option value='" + element.estanteria_ID + "'>" + element.descripcion + "</option>");
+				   });
+			   }
+			});
+	}
+	function buscarProducto(codigoProducto){
+		return $.ajax({
+			   type : 'POST',
+			   url: 'BuscarProducto',
+			   dataType: 'json',
+			   data: {
+			      codigoProducto : codigoProducto,
+			      seccionID : 1,
+			      estanteriaID : 1,
+			      
+			   },
+			   error: function(data) {
+				   var obj = JSON.parse(JSON.stringify(data));
+				   notificacionError(obj.responseText);
+			   }
+			});
 	}
   }(window.jQuery, window, document));

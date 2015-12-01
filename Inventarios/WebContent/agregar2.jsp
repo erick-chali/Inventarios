@@ -66,7 +66,7 @@
                         <div class="col-xs-2 col-sm-2 col-md-1 col-lg-1">
                         	<label>Estanter&iacute;a</label>
                         </div>
-                        <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5">
+                        <div class="col-xs-4 col-sm-4 col-md-3 col-lg-3">
                         	<select id="estanteria" class="input-sm form-control">
                         		<option>Estanter&iacute;a</option>
                         	</select>      
@@ -74,11 +74,14 @@
                         <div class="col-xs-2 col-sm-2 col-md-1 col-lg-1">
                         	<label>Secci&oacute;n</label>
                         </div>
-                        <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5">
+                        <div class="col-xs-4 col-sm-4 col-md-3 col-lg-3">
                         	
 							<select id="seccion" class="input-sm form-control">
 								<option>Secci&oacute;n</option>
 							</select>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2">
+                        	<button type="button" class="btn btn-primary btn-md form-control" id="btnNuevo">Nuevo</button>
                         </div>
                     </div>
                 </div>
@@ -92,6 +95,38 @@
 			<table id="tablaProductosContados"></table>
 		</div>
 	</div>
+	<div id="modalAgregarProducto" class="modal fade" role="dialog">
+  		<div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h4 class="modal-title">Ingreso de producto no contado.</h4>
+	      </div>
+	      <div class="modal-body">
+			<label>C&oacute;digo Producto</label>
+			<input class="input-sm form-control" id="txtAgregarCodigo" type="text">
+			<label>Descripci&oacute;n </label>
+			<input class="input-sm form-control" id="txtAgregarDescripcion" type="text" disabled>
+			<label>Unidad</label>
+			<input class="input-sm form-control" id="txtAgregarUnidad" type="text" disabled>
+			<label>Estanter&iacute;a</label>
+			<select class="form-control input-sm" id="estanteriaAgregar"></select>
+			<label>Secci&oacute;n</label>
+			<select class="form-control input-sm" id="seccionAgregar"></select>
+			<label>Cantidad</label>
+			<input class="input-sm form-control" id="txtAgregarCantidad" type="number">
+	      	<label class="text-danger" id="lblErrorAgregar"></label>
+	      </div>
+	      
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+	        <button type="button" class="btn btn-success" id="btnAgregarProducto">Agregar</button>
+	      </div>
+	    </div>
+
+  		</div>
+	</div>
+	
 	
 	<div class="container">
 		<h4 id="notificacionExito" class="alert alert-success" role="alert"></h4>

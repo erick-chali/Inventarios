@@ -126,10 +126,11 @@
 				</div><!-- Encabezado  -->
 				<div class="modal-body">
 					<label for="popCodigoProducto">Codigo Producto</label>
-					<input id="popCodigoProducto" class="form-control">
+					<input id="popCodigoProducto" class="form-control" type="number">
 					<label for="popDescripcionProducto">Descripcion de Producto</label>
-				    <input id="popDescripcionProducto" class="form-control">
-				   	<button type="button" class="btn btn-default" id="popBuscarProducto" name="popBuscarProducto">
+				    <input id="popDescripcionProducto" class="form-control" type="text">
+				    <label class="text-danger" id="lblMensaje"></label>
+				   	<button type="button" class="btn btn-default btn-lg form-control" id="popBuscarProducto" name="popBuscarProducto">
                     	<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                     </button>
                     <div id="tablaPOP" >

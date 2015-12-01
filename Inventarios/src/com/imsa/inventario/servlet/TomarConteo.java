@@ -120,11 +120,8 @@ public class TomarConteo extends HttpServlet {
 				con = new ConectarDB().getConnection();
 				stmt = con.prepareCall("{call stp_UDinActualizaProducto2NEW(?,?,?,?,?,?)}");
 				stmt.setInt(1, Integer.parseInt((String)request.getSession().getAttribute("noToma")));
-//				stmt.setString(2, (String)request.getSession().getAttribute("codigoBodega"));
 				stmt.setString(2, (String)request.getSession().getAttribute("codigop"));
-//				stmt.setString(4, (String)request.getSession().getAttribute("unidad"));
 				stmt.setDouble(3, Double.parseDouble((String)request.getSession().getAttribute("cantidad")));
-//				stmt.setString(6, null);
 				stmt.setInt(4, Integer.parseInt((String)request.getSession().getAttribute("codigos")));
 				stmt.setInt(5, Integer.parseInt((String)request.getSession().getAttribute("codigoe")));
 				stmt.setInt(6, Integer.parseInt((String)request.getSession().getAttribute("userId")));

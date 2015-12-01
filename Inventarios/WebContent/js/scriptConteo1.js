@@ -5,7 +5,11 @@
 
    $(function() {
 	   var notificacion;
-	   
+	   $(function () {
+		    $(window).resize(function () {
+		        $('#tablaProductoEmergente').bootstrapTable('resetView');
+		    });
+		});
 	   $('#barraNav').hide();
 	   $('#notificacionExito').hide();
 	   $('#notificacionError').hide();
@@ -128,6 +132,27 @@
 	   });
 	 //Buscar los datos del codigo de producto ingresado al presionar enter
 	   
+	   $(document).on('keydown', '#popCodigoProducto', function(e){
+		  if(e.keyCode==13 || e.keyCode == 9){
+			  e.preventDefault();
+			  if($('#popCodigoProducto').val() == '' ){
+				  $('#lblMensaje').text('Debe ingresar un codigo para buscar.');
+			  }else{
+				  $('#lblMensaje').text('');
+				  buscarProductoEmergente();
+			  }
+		  } 
+	   });
+	   $(document).on('keydown', '#popDescripcionProducto', function(e){
+			  if(e.keyCode==13 || e.keyCode == 9){
+				  if($('#popDescripcionProducto').val() == '' ){
+					  $('#lblMensaje').text('Debe ingresar descripcion para buscar.');
+				  }else{
+					  $('#lblMensaje').text('');
+					  buscarProductoEmergente();
+				  }
+			  } 
+		   });
 	   $(document).on('keydown','#codigoProducto', function(e){
 
 		   if(e.keyCode==13||e.keyCode==9){
@@ -398,8 +423,10 @@
 	  /**Buscar coincidencias de producto o descripcion del mismo en ventana emergente*/
 	  $(document).on('click','#popBuscarProducto',function(){
 		  if($('#popCodigoProducto').val()==''&&$('#popDescripcionProducto').val()==''){
-			  alert('Debe ingresar almenos 1 campo para poder buscar.');
+			  $('#lblMensaje').text('Debe ingresar almenos 1 campo para poder buscar.');
+			  
 		  }else{
+			  $('#lblMensaje').text('');
 			  buscarProductoEmergente();
 		  }
 	  });
@@ -698,7 +725,6 @@
 			   notificacionError(obj.responseText);
 		   },
 		   success: function(data) {
-//			   alert(JSON.stringify(data));
 			   var tabla = $('<table id="tablaProductoEmergente"></table>');
 			   var thead = $('<thead></thead>');
 			   var enc = $('<tr> <th></th> <th></th> <th></th> <th></th> <th></th> </tr>');
@@ -712,16 +738,9 @@
 	   				pagination: true,
 	   				pageSize: 50,
 	   				pageList: [10, 25, 50, 100, 200],
-	   				onClickRow: function (row, $element) {
-	   					$('#popBuscaProd').modal('toggle');
-	   					$('#codigoProducto').val($.trim(row.codigoProducto));
-	   					$('#descripcion').val(row.descripcion);
-	   					$('#unidad').val(row.unidadInventario);
-	   					$('#cantidadActual').val(row.conteo1);
-	   					sumarCantidad();
-	   					$('#cantidad').focus();
-	   					$('#cantidad').click();
-	   				},
+//	   				onClickRow: function (row, $element) {
+//	   					
+//	   				},
 	   			columns: [
 	   			{
                     field: 'codigoProducto',
@@ -745,6 +764,16 @@
                 }
                 ]
 	   			});
+			   $('#tablaProductoEmergente').on('click-row.bs.table', function (e, row, $element) {
+				   $('#popBuscaProd').modal('toggle');
+				   $('#codigoProducto').val($.trim(row.codigoProducto));
+				   $('#descripcion').val(row.descripcion);
+				   $('#unidad').val(row.unidadInventario);
+				   $('#cantidadActual').val(row.conteo1);
+				   sumarCantidad();
+				   $('#cantidad').click();
+				   $('#cantidad').focus();
+			   });
 		   }
 		});
    }
